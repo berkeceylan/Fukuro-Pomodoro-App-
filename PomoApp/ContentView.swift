@@ -14,6 +14,7 @@ struct ContentView: View {
     @State var breakTime = 5
     @State var isSession = false
     @State var isBreak = false
+    @State var isPaused = false
     
     let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     
@@ -76,13 +77,24 @@ struct ContentView: View {
             }
             
             HStack(spacing: 30) {
-                Button("Start") {
-                    isSession = true
+                if isPaused == false && (isSession == false && isBreak == false){
+                    Button("Start") {
+                        isPaused = false
+                        isSession = true
+                    }
                 }
+                else if (isSession == true || isBreak == true) && isPaused == false{
+                    Button(action:{ isPaused = true}){Text("Pause")}
+                }
+                else if isPaused == true && (isSession == true || isBreak == true ){
+                    Button(action:{isPaused = false}){Text("Resume")}
+                }
+                
                 
                 Button("Reset") {
                     sessionInMinutes = sessionTime * 60
                     breakInMinutes = breakTime * 60
+                    isPaused = false
                     isSession = false
                     isBreak = false
                 }
@@ -90,23 +102,34 @@ struct ContentView: View {
             }
         }
         .onReceive(timer) { _ in
-            if isSession {
-                if sessionInMinutes > 0 {
-                    sessionInMinutes -= 1
-                } else {
-                    isSession = false
-                    isBreak = true
-                    breakInMinutes = breakTime * 60
+            if isPaused == false{
+                if isSession {
+                    if sessionInMinutes > 0 {
+                        sessionInMinutes -= 1
+                    }
+                    else {
+                        isSession = false
+                        isBreak = true
+                        breakInMinutes = breakTime * 60
+                        NotificationManager.shared.sendNotification(title: "Session Ended", body: " Time for a break!", delay: 1)
+                    }
                 }
-            } else if isBreak {
-                if breakInMinutes > 0 {
-                    breakInMinutes -= 1
-                } else {
-                    isSession = true
-                    isBreak = false
-                    sessionInMinutes = sessionTime * 60
+                else if isBreak {
+                    if breakInMinutes > 0 {
+                        breakInMinutes -= 1
+                    }
+                    else {
+                        isSession = true
+                        isBreak = false
+                        sessionInMinutes = sessionTime * 60
+                        NotificationManager.shared.sendNotification(title: "Break Ended", body: "Time to get back to work!", delay: 1)
+                    }
                 }
             }
+        }
+        .onAppear {
+            NotificationManager.shared.requestNotificationPermisson()
+            UNUserNotificationCenter.current().delegate = NotificationManager.shared.notificationDelegate
         }
     }
 }

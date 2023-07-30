@@ -11,6 +11,8 @@
 		7A0AAD422A71A14800E74720 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A0AAD412A71A14800E74720 /* ContentView.swift */; };
 		7A0AAD442A71A14A00E74720 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7A0AAD432A71A14A00E74720 /* Assets.xcassets */; };
 		7A0AAD472A71A14A00E74720 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7A0AAD462A71A14A00E74720 /* Preview Assets.xcassets */; };
+		7A10A7642A76F1A100352107 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A10A7632A76F1A100352107 /* NotificationManager.swift */; };
+		7A10A7662A76FC9C00352107 /* NotificationDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A10A7652A76FC9C00352107 /* NotificationDelegate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -19,6 +21,8 @@
 		7A0AAD412A71A14800E74720 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		7A0AAD432A71A14A00E74720 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		7A0AAD462A71A14A00E74720 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		7A10A7632A76F1A100352107 /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
+		7A10A7652A76FC9C00352107 /* NotificationDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationDelegate.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -53,6 +57,8 @@
 			children = (
 				7A0AAD3F2A71A14800E74720 /* PomoAppApp.swift */,
 				7A0AAD412A71A14800E74720 /* ContentView.swift */,
+				7A10A7652A76FC9C00352107 /* NotificationDelegate.swift */,
+				7A10A7632A76F1A100352107 /* NotificationManager.swift */,
 				7A0AAD432A71A14A00E74720 /* Assets.xcassets */,
 				7A0AAD452A71A14A00E74720 /* Preview Content */,
 			);
@@ -137,8 +143,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7A10A7642A76F1A100352107 /* NotificationManager.swift in Sources */,
 				7A0AAD422A71A14800E74720 /* ContentView.swift in Sources */,
 				7A0AAD402A71A14800E74720 /* PomoAppApp.swift in Sources */,
+				7A10A7662A76FC9C00352107 /* NotificationDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
