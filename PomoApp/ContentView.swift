@@ -8,10 +8,13 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State var originalSessionTime = 0
+    @State var originalBreakTime = 0
     @State var sessionInMinutes = 25 * 60
     @State var breakInMinutes = 5 * 60
     @State var sessionTime = 25
     @State var breakTime = 5
+    @State var sessionAmount = 4
     @State var isSession = false
     @State var isBreak = false
     @State var isPaused = false
@@ -42,24 +45,39 @@ struct ContentView: View {
                 // Display for Session Time
                 Text("Session Time")
                     .font(.headline)
-                Text("\(sessionMinutes):\(sessionSeconds < 10 ? "0" : "")\(sessionSeconds)")
+                Text("\(isBreak ? String(format: "%02d:00", originalSessionTime) : String(format: "%02d:%02d", sessionMinutes, sessionSeconds))")
                     .font(.system(size: 80, weight: .bold))
                     .opacity(0.80)
+
             }
             .padding()
-            
-            VStack(alignment: .center) {
-                // Display for Break Time
-                Text("Break Time")
-                    .font(.headline)
-                Text("\(breakMinutes):\(breakSeconds < 10 ? "0" : "")\(breakSeconds)")
-                    .font(.system(size: 40, weight: .bold))
-                    .opacity(0.80)
-            }
-            .padding()
+            HStack{
+                
+                VStack(alignment: .center) {
+                    // Display for Break Time
+                    Text("Break Time")
+                        .font(.headline)
+                    Text("\(isSession ? String(format: "%02d:00", originalBreakTime) : String(format: "%02d:%02d", breakMinutes, breakSeconds))")
+                        .font(.system(size: 40, weight: .bold))
+                        .opacity(0.80)
+
+                }
+                .padding()
+                
+                Spacer().frame(width: 30)
+                
+                VStack(alignment: .center){
+                    //Display for session amount
+                    Text("Session Amount")
+                        .font(.headline)
+                    Text("x\(sessionAmount)")
+                        .font(.system(size: 40, weight: .bold))
+                        .opacity(0.80)
+                }
+                .padding()
                     
-            
-            
+            }
+                    
             Stepper(value: $sessionTime, in: 1...60, step: 1) {
                 Text("Set Session Time")
             }
@@ -75,12 +93,19 @@ struct ContentView: View {
             .onChange(of: breakTime) { breakValue in
                 breakInMinutes = breakValue * 60
             }
+            Stepper(value: $sessionAmount, in: 1...60, step: 1) {
+                Text("Set Amount of Session")
+            }
+            .padding()
+    
             
             HStack(spacing: 30) {
                 if isPaused == false && (isSession == false && isBreak == false){
                     Button("Start") {
                         isPaused = false
                         isSession = true
+                        originalBreakTime = breakTime
+                        originalSessionTime = sessionTime
                     }
                 }
                 else if (isSession == true || isBreak == true) && isPaused == false{
@@ -92,17 +117,24 @@ struct ContentView: View {
                 
                 
                 Button("Reset") {
-                    sessionInMinutes = sessionTime * 60
-                    breakInMinutes = breakTime * 60
-                    isPaused = false
-                    isSession = false
-                    isBreak = false
+                    if isSession == true || isBreak == true{
+                        sessionInMinutes = sessionTime * 60
+                        breakInMinutes = breakTime * 60
+                        isPaused = false
+                        isSession = false
+                        isBreak = false
+                    }
+                    else{
+                        sessionTime = 25
+                        breakTime = 5
+                        sessionAmount = 4
+                    }
                 }
                 .foregroundColor(.red)
             }
         }
         .onReceive(timer) { _ in
-            if isPaused == false{
+            if isPaused == false && sessionAmount != 0{
                 if isSession {
                     if sessionInMinutes > 0 {
                         sessionInMinutes -= 1
@@ -112,6 +144,8 @@ struct ContentView: View {
                         isBreak = true
                         breakInMinutes = breakTime * 60
                         NotificationManager.shared.sendNotification(title: "Session Ended", body: " Time for a break!", delay: 1)
+                        
+                        sessionAmount -= 1
                     }
                 }
                 else if isBreak {
@@ -121,7 +155,9 @@ struct ContentView: View {
                     else {
                         isSession = true
                         isBreak = false
-                        sessionInMinutes = sessionTime * 60
+                        if sessionAmount > 0 {
+                            sessionInMinutes = sessionTime * 60
+                        }
                         NotificationManager.shared.sendNotification(title: "Break Ended", body: "Time to get back to work!", delay: 1)
                     }
                 }
