@@ -25,6 +25,7 @@ class NotificationManager{
         let content = UNMutableNotificationContent()
         content.title = title
         content.body = body
+        content.sound = UNNotificationSound.default
         //content.sound = UNNotificationSound(named: UNNotificationSoundName(rawValue: "customSound.wav")) // to add custom sound
 
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: delay, repeats: false)
