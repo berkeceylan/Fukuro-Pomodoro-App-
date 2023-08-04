@@ -42,152 +42,192 @@ struct ContentView: View {
     }
     
     var body: some View {
-        VStack {
-            
+        ZStack{
+            Color("green").edgesIgnoringSafeArea(.all)
             VStack(alignment: .center) {
-                Text("Session Time")
-                    .font(.headline)
-                Text("\(isBreak ? String(format: "%02d:00", originalSessionTime) : String(format: "%02d:%02d", sessionMinutes, sessionSeconds))")
-                    .font(.system(size: 80, weight: .bold))
-                    .opacity(0.80)
-            }
-            .padding()
-
-            HStack{
+//                Text("PADO")
+//                    .font(.system(size: 50, weight:.bold, design: .rounded))
+//                    .multilineTextAlignment(.center)
+//                    .padding(.vertical, -2.0)
+//                    .foregroundColor(Color(""))
+                
                 VStack(alignment: .center) {
-                    Text("Break Time")
-                        .font(.headline)
-                    Text("\(isSession ? String(format: "%02d:00", originalBreakTime) : String(format: "%02d:%02d", breakMinutes, breakSeconds))")
-                        .font(.system(size: 40, weight: .bold))
+                    Text("Session Time")
+                        .font(.system(size: 20, weight:.bold, design: .rounded))
+                    Text("\(isBreak ? String(format: "%02d:00", originalSessionTime) : String(format: "%02d:%02d", sessionMinutes, sessionSeconds))")
+                        .font(.system(size: 80, weight: .bold, design: .rounded))
                         .opacity(0.80)
                 }
                 .padding()
+                .frame(width: 330)
+                .background(.thinMaterial)
+                .cornerRadius(20)
+                .overlay(RoundedRectangle(cornerRadius: 20).stroke(Color.secondary, lineWidth: 5))
+                .padding()
                 
-                Spacer().frame(width: 30)
+                HStack{
+                    VStack(alignment: .center) {
+                        Text("Break Time")
+                            .font(.system(size: 20, weight:.bold, design: .rounded))
+                        Text("\(isSession ? String(format: "%02d:00", originalBreakTime) : String(format: "%02d:%02d", breakMinutes, breakSeconds))")
+                            .font(.system(size: 40, weight: .bold, design: .rounded))
+                            .opacity(0.80)
+                    }
+                    .padding()
+                    .frame(width: 150)
+                    .background(.thinMaterial)
+                    .cornerRadius(20)
+                    .overlay(RoundedRectangle(cornerRadius: 20).stroke(Color.secondary, lineWidth: 5))
+                    
+                    Spacer().frame(width: 30)
+                    
+                    VStack(alignment: .center){
+                        Text("Sessions")
+                            .font(.system(size: 20, weight:.bold, design: .rounded))
+                        Text("x\(sessionAmount)")
+                            .font(.system(size: 40, weight: .bold, design: .rounded))
+                            .opacity(0.80)
+                    }
+                    .padding()
+                    .frame(width: 150)
+                    .background(.thinMaterial)
+                    .cornerRadius(20)
+                    .overlay(RoundedRectangle(cornerRadius: 20).stroke(Color.secondary, lineWidth: 5))
+                }
                 
                 VStack(alignment: .center){
-                    Text("Session Amount")
-                        .font(.headline)
-                    Text("x\(sessionAmount)")
-                        .font(.system(size: 40, weight: .bold))
-                        .opacity(0.80)
-                }
-                .padding()
-            }
-
-            VStack(alignment: .center){
-                
-                // Slider for setting the session time
-                VStack {
-                    Text("Set Session Time")
-                    Slider(value: $sessionTime, in: 1...60, step: 1)
-                        .disabled(isSession || isBreak)
-                        
-                        .onChange(of: sessionTime) { sessionValue in
-                            sessionInMinutes = Int(sessionValue) * 60
-                        }
-                        
-                }
-                .padding()
-                .frame(width: 300)
-                
-                // Slider for setting the break time
-                VStack {
-                    Text("Set Break Time")
-                    Slider(value: $breakTime, in: 1...60, step: 1)
-                        .disabled(isSession || isBreak)
-                        .onChange(of: breakTime) { breakValue in
-                            breakInMinutes = Int(breakValue) * 60
-                        }
-                        
-                }
-                .padding()
-                .frame(width: 300)
-                
-                // Stepper for setting the amount of session
-                Stepper(value: $sessionAmount, in: 1...60, step: 1) {
-                    Text("Set Amount of Session")
-                }
-                .disabled(isSession || isBreak)
-                .frame(width: 300)
-                .padding()
-            }
-            .padding()
-            
-            HStack(spacing: 30) {
-                if isPaused == false && (isSession == false && isBreak == false){
-                    Button("Start") {
-                        isPaused = false
-                        isSession = true
-                        originalBreakTime = Int(breakTime)
-                        originalSessionTime = Int(sessionTime)
-                        sessionEndAt = Date().addingTimeInterval(TimeInterval(sessionInMinutes))
-                    }
-                }
-                else if (isSession == true || isBreak == true) && isPaused == false{
-                    Button(action:{ isPaused = true}){Text("Pause")}
-                }
-                else if isPaused == true && (isSession == true || isBreak == true ){
-                    Button(action:{isPaused = false}){Text("Resume")}
-                }
-                
-                Button("Reset") {
-                    if isSession == true || isBreak == true{
-                        sessionInMinutes = Int(sessionTime) * 60
-                        breakInMinutes = Int(breakTime) * 60
-                        isPaused = false
-                        isSession = false
-                        isBreak = false
-                    }
-                    else{
-                        sessionTime = 25
-                        breakTime = 5
-                        sessionAmount = 4
-                    }
-                }
-                .foregroundColor(.red)
-            }
-        }
-        .onReceive(timer) { _ in
-            if isPaused == false && sessionAmount != 0{
-                if isSession {
-                    if let sessionEndAt = self.sessionEndAt {
-                        let remainingTime = sessionEndAt.timeIntervalSince(Date())
-                        if remainingTime > 0 {
-                            sessionInMinutes = Int(remainingTime)
-                        }
-                        else {
-                            isSession = false
-                            isBreak = true
-                            breakInMinutes = Int(breakTime) * 60
-                            breakEndAt = Date().addingTimeInterval(TimeInterval(breakInMinutes))
-                            NotificationManager.shared.sendNotification(title: "Session Ended", body: " Time for a break!", delay: 1)
-                            sessionAmount -= 1
-                        }
-                    }
-                }
-                else if isBreak {
-                    if let breakEndAt = self.breakEndAt {
-                        let remainingTime = breakEndAt.timeIntervalSince(Date())
-                        if remainingTime > 0 {
-                            breakInMinutes = Int(remainingTime)
-                        }
-                        else {
-                            isSession = true
-                            isBreak = false
-                            if sessionAmount > 0 {
-                                sessionInMinutes = Int(sessionTime) * 60
-                                sessionEndAt = Date().addingTimeInterval(TimeInterval(sessionInMinutes))
+                    
+                    // Slider for setting the session time
+                    VStack {
+                        Text("Set Session Time")
+                            .font(.system(size: 20, weight:.medium, design: .rounded))
+                        Slider(value: $sessionTime, in: 1...60, step: 1)
+                            .disabled(isSession || isBreak)
+                            .accentColor(Color("orange"))
+                            .onChange(of: sessionTime) { sessionValue in
+                                sessionInMinutes = Int(sessionValue) * 60
                             }
-                            NotificationManager.shared.sendNotification(title: "Break Ended", body: "Time to get back to work!", delay: 1)
+                        
+                    }
+                    .padding()
+                    .frame(width: 300)
+                    
+                    // Slider for setting the break time
+                    VStack {
+                        Text("Set Break Time")
+                            .font(.system(size: 20, weight:.medium, design: .rounded))
+                        Slider(value: $breakTime, in: 1...60, step: 1)
+                            .disabled(isSession || isBreak)
+                            .accentColor(Color("orange"))
+                            .onChange(of: breakTime) { breakValue in
+                                breakInMinutes = Int(breakValue) * 60
+                            }
+                        
+                    }
+                    .padding()
+                    .frame(width: 300)
+                    
+                    // Stepper for setting the amount of session
+                    Stepper(value: $sessionAmount, in: 1...60, step: 1) {
+                        Text("Session Amount")
+                            .fontWeight(.medium)
+                            .fontDesign(.rounded)
+                    }
+                    .disabled(isSession || isBreak)
+                    .frame(width: 250)
+                    .padding()
+                }
+                .padding()
+                
+                HStack(spacing: 30) {
+                    if isPaused == false && (isSession == false && isBreak == false){
+                        Button("Start") {
+                            isPaused = false
+                            isSession = true
+                            originalBreakTime = Int(breakTime)
+                            originalSessionTime = Int(sessionTime)
+                            sessionEndAt = Date().addingTimeInterval(TimeInterval(sessionInMinutes))
+                        }
+                        .foregroundColor(Color("blue2"))
+                        .font(.system(size: 30, weight:.bold, design: .rounded))
+                        //.frame(width: 100, height: 40)
+                        //.cornerRadius(20)
+                        //.overlay(RoundedRectangle(cornerRadius: 20).stroke(Color.gray, lineWidth: 4))
+                    }
+                    else if (isSession == true || isBreak == true) && isPaused == false{
+                        Button(action:{ isPaused = true}){Text("Pause")}
+                            .foregroundColor(Color("blue2"))
+                            .font(.system(size: 30, weight:.bold, design: .rounded))
+                    }
+                    else if isPaused == true && (isSession == true || isBreak == true ){
+                        Button(action:{isPaused = false}){Text("Resume")}
+                            .foregroundColor(Color("blue2"))
+                            .font(.system(size: 30, weight:.bold, design: .rounded))
+                    }
+                    
+                    Button("Reset") {
+                        if isSession == true || isBreak == true{
+                            sessionInMinutes = Int(sessionTime) * 60
+                            breakInMinutes = Int(breakTime) * 60
+                            isPaused = false
+                            isSession = false
+                            isBreak = false
+                        }
+                        else{
+                            sessionTime = 25
+                            breakTime = 5
+                            sessionAmount = 4
+                        }
+                    }
+                    .foregroundColor(Color("red"))
+                    .font(.system(size: 30, weight: .bold, design: .rounded))
+                    //.frame(width: 100, height: 40)
+                    //.background(.thinMaterial)
+                    //.cornerRadius(10)
+                    //.overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.secondary, lineWidth: 3))
+                }
+            }
+            .onReceive(timer) { _ in
+                if isPaused == false && sessionAmount != 0{
+                    if isSession {
+                        if let sessionEndAt = self.sessionEndAt {
+                            let remainingTime = sessionEndAt.timeIntervalSince(Date())
+                            if remainingTime > 0 {
+                                sessionInMinutes = Int(remainingTime)
+                            }
+                            else {
+                                isSession = false
+                                isBreak = true
+                                breakInMinutes = Int(breakTime) * 60
+                                breakEndAt = Date().addingTimeInterval(TimeInterval(breakInMinutes))
+                                NotificationManager.shared.sendNotification(title: "Session Ended", body: " Time for a break!", delay: 1)
+                                sessionAmount -= 1
+                            }
+                        }
+                    }
+                    else if isBreak {
+                        if let breakEndAt = self.breakEndAt {
+                            let remainingTime = breakEndAt.timeIntervalSince(Date())
+                            if remainingTime > 0 {
+                                breakInMinutes = Int(remainingTime)
+                            }
+                            else {
+                                isSession = true
+                                isBreak = false
+                                if sessionAmount > 0 {
+                                    sessionInMinutes = Int(sessionTime) * 60
+                                    sessionEndAt = Date().addingTimeInterval(TimeInterval(sessionInMinutes))
+                                }
+                                NotificationManager.shared.sendNotification(title: "Break Ended", body: "Time to get back to work!", delay: 1)
+                            }
                         }
                     }
                 }
             }
-        }
-        .onAppear {
-            NotificationManager.shared.requestNotificationPermisson()
-            UNUserNotificationCenter.current().delegate = NotificationManager.shared.notificationDelegate
+            .onAppear {
+                NotificationManager.shared.requestNotificationPermisson()
+                UNUserNotificationCenter.current().delegate = NotificationManager.shared.notificationDelegate
+            }
         }
     }
 }
