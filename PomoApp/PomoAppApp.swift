@@ -12,7 +12,7 @@ import SwiftUI
 struct PomoAppApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            SplashScreenView()
         }
     }
 }
