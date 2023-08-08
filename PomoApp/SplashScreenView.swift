@@ -22,10 +22,13 @@ struct SplashScreenView: View {
                 Color("green").edgesIgnoringSafeArea(.all)
                 VStack{
                     VStack(alignment: .center){
-                        Image("owl1")
-                            .font(.system(size: 80))
-                        Text("OWL")
-                            .font(.system(size: 80, weight:.bold, design: .rounded))
+                        Image("owl2")
+                            .resizable()
+                            .frame(width: 300, height: 300)
+                           
+                            
+                        Text("FUKURO")
+                            .font(.system(size: 80, weight:.medium, design: .rounded))
                             //.foregroundColor(Color("orange").opacity(0.80))
                             .foregroundColor(.black.opacity(0.80))
                     }
@@ -39,7 +42,7 @@ struct SplashScreenView: View {
                     }
                 }
                 .onAppear{
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 2.0){
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 3.0){
                         withAnimation{
                             print("Switching to ContentView")
                             self.isActive = true
