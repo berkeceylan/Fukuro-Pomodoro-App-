@@ -44,55 +44,64 @@ struct ContentView: View {
     var body: some View {
         ZStack{
             Color("green").edgesIgnoringSafeArea(.all)
+           // Image("owl3")
+           //     .resizable()
+             //   .frame(width: 50, height: 50)
+            
             VStack(alignment: .center) {
-//                Text("PADO")
-//                    .font(.system(size: 50, weight:.bold, design: .rounded))
-//                    .multilineTextAlignment(.center)
-//                    .padding(.vertical, -2.0)
-//                    .foregroundColor(Color(""))
+                Text("Focus like a Fukuro, undisturbed by the chaos.")
+                    .multilineTextAlignment(.center)
+                    .font(.system(size: 20, weight:.medium, design: .rounded))
+                    .padding()
                 
                 VStack(alignment: .center) {
                     Text("Session Time")
                         .font(.system(size: 20, weight:.bold, design: .rounded))
+                        .foregroundColor(.black)
                     Text("\(isBreak ? String(format: "%02d:00", originalSessionTime) : String(format: "%02d:%02d", sessionMinutes, sessionSeconds))")
                         .font(.system(size: 80, weight: .bold, design: .rounded))
+                        .foregroundColor(.black)
                         .opacity(0.80)
                 }
                 .padding()
                 .frame(width: 330)
-                .background(.thinMaterial)
+                .background(Color("thinGreen"))
                 .cornerRadius(20)
-                .overlay(RoundedRectangle(cornerRadius: 20).stroke(Color.secondary, lineWidth: 5))
+                .overlay(RoundedRectangle(cornerRadius: 20).stroke(Color("borderColor"), lineWidth: 5))
                 .padding()
                 
                 HStack{
                     VStack(alignment: .center) {
                         Text("Break Time")
                             .font(.system(size: 20, weight:.bold, design: .rounded))
+                            .foregroundColor(.black)
                         Text("\(isSession ? String(format: "%02d:00", originalBreakTime) : String(format: "%02d:%02d", breakMinutes, breakSeconds))")
                             .font(.system(size: 40, weight: .bold, design: .rounded))
+                            .foregroundColor(.black)
                             .opacity(0.80)
                     }
                     .padding()
                     .frame(width: 150)
-                    .background(.thinMaterial)
+                    .background(Color("thinGreen"))
                     .cornerRadius(20)
-                    .overlay(RoundedRectangle(cornerRadius: 20).stroke(Color.secondary, lineWidth: 5))
+                    .overlay(RoundedRectangle(cornerRadius: 20).stroke(Color("borderColor"), lineWidth: 5))
                     
                     Spacer().frame(width: 30)
                     
                     VStack(alignment: .center){
                         Text("Sessions")
                             .font(.system(size: 20, weight:.bold, design: .rounded))
+                            .foregroundColor(.black)
                         Text("x\(sessionAmount)")
                             .font(.system(size: 40, weight: .bold, design: .rounded))
                             .opacity(0.80)
+                            .foregroundColor(.black)
                     }
                     .padding()
                     .frame(width: 150)
-                    .background(.thinMaterial)
+                    .background(Color("thinGreen"))
                     .cornerRadius(20)
-                    .overlay(RoundedRectangle(cornerRadius: 20).stroke(Color.secondary, lineWidth: 5))
+                    .overlay(RoundedRectangle(cornerRadius: 20).stroke(Color("borderColor"), lineWidth: 5))
                 }
                 
                 VStack(alignment: .center){
@@ -101,6 +110,7 @@ struct ContentView: View {
                     VStack {
                         Text("Set Session Time")
                             .font(.system(size: 20, weight:.medium, design: .rounded))
+                            .foregroundColor(.black)
                         Slider(value: $sessionTime, in: 1...60, step: 1)
                             .disabled(isSession || isBreak)
                             .accentColor(Color("orange"))
@@ -116,6 +126,7 @@ struct ContentView: View {
                     VStack {
                         Text("Set Break Time")
                             .font(.system(size: 20, weight:.medium, design: .rounded))
+                            .foregroundColor(.black)
                         Slider(value: $breakTime, in: 1...60, step: 1)
                             .disabled(isSession || isBreak)
                             .accentColor(Color("orange"))
@@ -132,6 +143,7 @@ struct ContentView: View {
                         Text("Session Amount")
                             .fontWeight(.medium)
                             .fontDesign(.rounded)
+                            .foregroundColor(.black)
                     }
                     .disabled(isSession || isBreak)
                     .frame(width: 250)

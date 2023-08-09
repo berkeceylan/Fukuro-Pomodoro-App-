@@ -22,15 +22,20 @@ struct SplashScreenView: View {
                 Color("green").edgesIgnoringSafeArea(.all)
                 VStack{
                     VStack(alignment: .center){
+                        Spacer()
                         Image("owl2")
                             .resizable()
                             .frame(width: 300, height: 300)
+                            .opacity(0.80)
                            
-                            
                         Text("FUKURO")
                             .font(.system(size: 80, weight:.medium, design: .rounded))
-                            //.foregroundColor(Color("orange").opacity(0.80))
                             .foregroundColor(.black.opacity(0.80))
+                        Spacer()
+                        Text("Endless Flow: Where Sessions and Breaks Unite.")
+                            .font(.system(size: 20, weight:.medium, design: .rounded))
+                            .foregroundColor(.black.opacity(0.80))
+                            .multilineTextAlignment(.center)
                     }
                     .scaleEffect(size)
                     .opacity(opacity)
