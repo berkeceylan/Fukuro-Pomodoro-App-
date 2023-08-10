@@ -44,15 +44,32 @@ struct ContentView: View {
     var body: some View {
         ZStack{
             Color("green").edgesIgnoringSafeArea(.all)
-           // Image("owl3")
-           //     .resizable()
-             //   .frame(width: 50, height: 50)
+            VStack{
+                HStack{
+                    Spacer().frame(width: 190)
+                    Image("owl3")
+                        .resizable()
+                        .frame(width: 125, height: 125)
+                        .opacity(0.80)
+                    
+                }
+                Spacer().frame(height: 610)
+            }
+           
             
             VStack(alignment: .center) {
-                Text("Focus like a Fukuro, undisturbed by the chaos.")
-                    .multilineTextAlignment(.center)
-                    .font(.system(size: 20, weight:.medium, design: .rounded))
-                    .padding()
+                HStack(){
+                    //Text("Focus like a Fukuro, undisturbed by the chaos.")
+                    Text("Fukuro")
+                        .multilineTextAlignment(.leading)
+                        .foregroundColor(.black)
+                        .opacity(0.80)
+                        .font(.system(size: 50, weight:.medium, design: .rounded))
+                        .padding()
+                    Spacer().frame(width: 150)
+                }
+               
+                    
                 
                 VStack(alignment: .center) {
                     Text("Session Time")
@@ -162,9 +179,6 @@ struct ContentView: View {
                         }
                         .foregroundColor(Color("blue2"))
                         .font(.system(size: 30, weight:.bold, design: .rounded))
-                        //.frame(width: 100, height: 40)
-                        //.cornerRadius(20)
-                        //.overlay(RoundedRectangle(cornerRadius: 20).stroke(Color.gray, lineWidth: 4))
                     }
                     else if (isSession == true || isBreak == true) && isPaused == false{
                         Button(action:{ isPaused = true}){Text("Pause")}
@@ -193,10 +207,6 @@ struct ContentView: View {
                     }
                     .foregroundColor(Color("red"))
                     .font(.system(size: 30, weight: .bold, design: .rounded))
-                    //.frame(width: 100, height: 40)
-                    //.background(.thinMaterial)
-                    //.cornerRadius(10)
-                    //.overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.secondary, lineWidth: 3))
                 }
             }
             .onReceive(timer) { _ in
